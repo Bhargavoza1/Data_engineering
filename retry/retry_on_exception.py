@@ -11,13 +11,13 @@ class RetryOnException:
         functools.update_wrapper(self, function)
 
         def wrapper(*args, **kwargs):
-            self.logger.info(f"Retries: {self._retries}")
+            self.log.info(f"Retries: {self._retries}")
             while self._retries != 0:
                 try:
                     return function(*args, **kwargs)
                     self._retries = 0
                 except Exception as err:
-                    self.logger.info(f"Error occured: {err}")
+                    self.log.info(f"Error occured: {err}")
                     self._retries -= 1
                     self._raise_on_condition(self._retries, err)
         return wrapper
@@ -26,4 +26,4 @@ class RetryOnException:
         if retries == 0:
             raise exception
         else:
-            self.logger.info(f"Retries: {retries}")
+            self.log.info(f"Retries: {retries}")

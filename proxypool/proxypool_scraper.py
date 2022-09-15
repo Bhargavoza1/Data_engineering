@@ -32,21 +32,18 @@ class ProxyPoolScraper:
         self.bs_parser = bs_parser
 
     def get_proxy_stream(self, limit):
-        print("adadasd")
         raw_records = self.extract_table_raw_records()
         clean_records = list(
             map(self._clear_up_record, raw_records)
         )
-        print("adadddddddddd")
-        for record in clean_records[:limit]:
-            self.logger.info(f"Proxy record: {record}")
+        for record in clean_records[1:limit]:
+            self.log.info(f"Proxy record: {record}")
             if record:
                 yield ProxyRecord(*record)
 
     def extract_table_raw_records(self):
         content = self.parser.get_content()
         soup_object = BeautifulSoup(content, self.bs_parser)
-        print("asdsad")
         a = soup_object.find(id="list")
         b = a.find_all('tr')
         return (b)
@@ -57,13 +54,9 @@ class ProxyPoolScraper:
             in raw_record.find_all("td")
         ]
 
-    def world(self):
-        print("sadasdasdasd")
 
-a = ProxyPoolScraper("https://sportslens.com")
 
-b= a.get_proxy_stream(100)
-
-for value in a.get_proxy_stream(1):
-    print(value)
+#a = ProxyPoolScraper("https://free-proxy-list.net/")
+#for value in a.get_proxy_stream(2):
+#    print(value)
 

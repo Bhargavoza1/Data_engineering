@@ -30,7 +30,7 @@ class WebParser:
                         response.content
                     )
         except Exception as err:
-            self.logger.info(f"Error occurred: {err}")
+            self.log.info(f"Error occurred: {err}")
 
     @staticmethod
     def is_good_response(response):
