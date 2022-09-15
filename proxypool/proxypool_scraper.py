@@ -34,7 +34,7 @@ class ProxyPoolScraper:
     def get_proxy_stream(self, limit):
         raw_records = self.extract_table_raw_records()
         clean_records = list(
-            map(self._clear_up_record, raw_records)
+            map(self._clear_up_record, raw_records) # map(fun , iter)
         )
         for record in clean_records[1:limit]:
             self.log.info(f"Proxy record: {record}")
@@ -42,16 +42,16 @@ class ProxyPoolScraper:
                 yield ProxyRecord(*record)
 
     def extract_table_raw_records(self):
-        content = self.parser.get_content()
-        soup_object = BeautifulSoup(content, self.bs_parser)
-        a = soup_object.find(id="list")
-        b = a.find_all('tr')
+        content = self.parser.get_content() #get all content gibberish form
+        soup_object = BeautifulSoup(content, self.bs_parser) #arrange in proper sequence
+        a = soup_object.find(id="list") #find <id="list"> inside html dom
+        b = a.find_all('tr') # will find all <rt> tag in hierarchy
         return (b)
 
     def _clear_up_record(self, raw_record):
         return [
             val.text for val
-            in raw_record.find_all("td")
+            in raw_record.find_all("td") #will find every <td> tag inside every <tr> tag
         ]
 
 

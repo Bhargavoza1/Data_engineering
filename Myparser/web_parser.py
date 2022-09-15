@@ -25,7 +25,7 @@ class WebParser:
         }
         try: # requests.get we are passing custom kwargs and mainly headers
             with closing(get(self.url, **kwargs)) as response: # Return a context manager that closes thing upon completion of the block
-                if self.is_good_response(response): #   on response 200 will return html file of that pages
+                if self.is_good_response(response): #   on success response 200 will return of that pages
                     return (
                         response.content
                     )
