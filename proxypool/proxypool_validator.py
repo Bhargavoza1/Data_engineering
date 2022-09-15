@@ -37,3 +37,20 @@ class ProxyPoolValidator:
         )
         self.log.info(f"Proxy status: {proxy_status}")
         return proxy_status
+
+
+a = ProxyPoolValidator("https://google.com")
+from proxypool import  proxypool_scraper
+b = proxypool_scraper.ProxyPoolScraper("https://free-proxy-list.net/")
+c = b.get_proxy_stream(50)
+
+from concurrent.futures import ThreadPoolExecutor
+
+with ThreadPoolExecutor(max_workers=50) as executor:
+    results = executor.map(
+        a.validate_proxy, c
+    )
+    valid_proxies = filter(lambda x: x.is_valid is True, results)
+    sorted_valid_proxies = sorted(
+        valid_proxies, key=lambda x: x.health, reverse=True
+    )

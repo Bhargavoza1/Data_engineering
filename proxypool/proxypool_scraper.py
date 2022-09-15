@@ -57,6 +57,6 @@ class ProxyPoolScraper:
 
 
 #a = ProxyPoolScraper("https://free-proxy-list.net/")
-#for value in a.get_proxy_stream(2):
+#for value in a.get_proxy_stream(50):
 #    print(value)
 
