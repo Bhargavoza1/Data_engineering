@@ -79,7 +79,8 @@ class NewsFormatter:
 
 
 
-
+#<editor-fold desc=" testing  ">
+'''   
 
 RSS_FEEDS = {
         "en": [
@@ -97,7 +98,8 @@ c = b.get_proxy_stream(100)
 
 
 from concurrent.futures import ThreadPoolExecutor # The asynchronous execution can be performed with threads
-'''aa
+''' ''' if you want to test on proxy remove this comments and start redis docker 
+
 with ThreadPoolExecutor(max_workers=100) as executor: # refer -> https://docs.python.org/3/library/concurrent.futures.html
     results = executor.map(
         a.validate_proxy, c
@@ -106,10 +108,10 @@ with ThreadPoolExecutor(max_workers=100) as executor: # refer -> https://docs.py
     sorted_valid_proxies = sorted(
         valid_proxies, key=lambda x: x.health, reverse=True
     )
-'''
+
 import json
-#from proxypool import  redis_proxypool_client as rpc
-''' aa
+from proxypool import  redis_proxypool_client as rpc
+ 
 with rpc.RedisProxyPoolClient(rpc.REDIS_KEY , rpc.REDIS_CONFIG) as client:
    client.override_existing_proxies(
        [
@@ -117,14 +119,16 @@ with rpc.RedisProxyPoolClient(rpc.REDIS_KEY , rpc.REDIS_CONFIG) as client:
            for record in sorted_valid_proxies[:]
        ]
    )
-'''
+''''''
 for n, item in enumerate(RSS_FEEDS.items()):
     language, rss_feeds = item
     print(rss_feeds[0])
     producer = NewsProducer(rss_feeds[0], language)
-    #redis = rpc.RedisProxyPoolClient(rpc.REDIS_KEY , rpc.REDIS_CONFIG)
+    #redis = rpc.RedisProxyPoolClient(rpc.REDIS_KEY , rpc.REDIS_CONFIG)  #remove this comments as well
     #proxy = redis.get_proxy()
     proxy =None
     for news in producer.get_news_stream(proxy):
         a = news
         print(a)
+'''
+#</editor-fold>
