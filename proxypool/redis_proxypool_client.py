@@ -1,4 +1,4 @@
-''' before checking this we have to create docker image for redis
+''' before debugging/testing this we have to create docker image for the redis
 *** docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest ***
 use above command to creat docker instance of redis'''
 
@@ -8,6 +8,7 @@ import redis
 from log import log
 
 #<editor-fold desc=" redis config for local use and testing only ">
+
 REDIS_CONFIG = {
     "host": "localhost",
     "port": "6379",
@@ -15,6 +16,7 @@ REDIS_CONFIG = {
 }
 
 REDIS_KEY = "proxies"
+
 #</editor-fold>
 
 @log
@@ -33,7 +35,7 @@ class RedisProxyPoolClient:
         self.redis.delete(self.key)
         self.redis.lpush(self.key, *proxies)
 
-    def list_existing_proxies(self):
+    def list_existing_proxies(self): # get json value from redis
         response = self.redis.lrange(self.key, 0, -1)
         return [
             json.loads(proxy) for proxy in response
@@ -57,9 +59,7 @@ class RedisProxyPoolClient:
 
 
 #<editor-fold desc=" testing  ">
-
-r = RedisProxyPoolClient(REDIS_KEY , REDIS_CONFIG)
-r.get_proxy()
+'''
 from proxypool import proxypool_validator
 a = proxypool_validator.ProxyPoolValidator("https://google.com")
 from proxypool import  proxypool_scraper
@@ -94,5 +94,5 @@ rds.get("bb")
 prx =  rds.lrange(REDIS_KEY, 0, -1)
 listprx = [json.loads(proxy) for proxy in prx]
 print(listprx[0])
-
+'''
 #</editor-fold>

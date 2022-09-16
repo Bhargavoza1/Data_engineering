@@ -3,7 +3,7 @@ from log import log
 
 
 @log
-class RetryOnException:
+class RetryOnException: # creating our custom class python decorator. like class wrapper on function.
     def __init__(self, retries):
         self._retries = retries
 
@@ -27,3 +27,20 @@ class RetryOnException:
             raise exception
         else:
             self.log.info(f"Retries: {retries}")
+
+#<editor-fold desc=" testing  ">
+'''
+@RetryOnException(5)
+def example():
+    try:
+        x:int = int(input("Enter number: "))
+        x = 1 + x
+        print(x)
+    except Exception as err:
+        print("Invalid input")
+        raise err
+
+
+example()
+'''
+#</editor-fold>
