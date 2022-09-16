@@ -5,7 +5,7 @@ use above command to creat docker instance of redis'''
 
 import json
 import redis
-from log import log
+from modules import log
 
 #<editor-fold desc=" redis config for local use and testing only ">
 

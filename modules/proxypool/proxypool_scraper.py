@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from dataclasses import dataclass, field
-from Myparser import WebParser
-from log import log
+from modules import WebParser
+from modules import log
 
 
 @dataclass # this decorator will automatically add required dunder methods such as __init__ (for detail explanation https://docs.python.org/3/library/dataclasses.html)

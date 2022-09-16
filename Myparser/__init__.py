@@ -1,1 +1,0 @@
-from Myparser.web_parser import *

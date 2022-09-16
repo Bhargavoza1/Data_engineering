@@ -3,8 +3,8 @@ import re
 import random
 from contextlib import closing
 from requests import get
-from log import log
-from Myparser.random_headers_list import headers_list
+from modules import log
+from modules.Myparser.random_headers_list import headers_list
 
 
 @log

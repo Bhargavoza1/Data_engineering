@@ -1,8 +1,8 @@
-from proxypool import proxypool_validator
-from proxypool import  proxypool_scraper
-from rss_news import rss_news_producer
-from rss_news.rss_news_exporter import NewsExporter
-from rss_news.rss_news_validator import NewsValidator
+from modules import proxypool_validator
+from modules import  proxypool_scraper
+from modules import rss_news_producer
+from modules import NewsExporter
+from modules import NewsValidator
 
 
 RSS_FEEDS = {

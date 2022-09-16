@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 import atoma #Atom, RSS and JSON feed parser for Python 3.
-from Myparser import WebParser
+from modules import WebParser
 
 
 @dataclass(frozen=True)# emulating immutability in python

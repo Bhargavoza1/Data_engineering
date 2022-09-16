@@ -2,8 +2,8 @@
 
 import time
 from dataclasses import dataclass
-from Myparser import WebParser
-from log import log
+from modules import WebParser
+from modules import log
 
 
 @dataclass(frozen=True) # emulating immutability in python
