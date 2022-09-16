@@ -5,8 +5,10 @@ kafka-topics  --bootstrap-server localhost:9092 --list
 
 kafka-topics --bootstrap-server localhost:9092 --delete --topic Myfirsttopic
 
+kafka-topics --bootstrap-server localhost:9092 --topic rss_news --create --partitions 3 --replication-factor 1
 kafka-console-consumer --bootstrap-server localhost:9092 --topic rss_news --from-beginning
 
+kafka-console-producer --bootstrap-server localhost:9092 --topic rss_new
 
 docker-compose -f kafkacompose.yml up
 

@@ -24,8 +24,8 @@ class NewsProducer:
         self.formatter = NewsFormatter(language)
 
     def _extract_news_feed_items(self, proxies):
-        # content = self.parser.get_content(proxies=proxies)
-        content = self.parser.get_content( )
+        content = self.parser.get_content(proxies=proxies)
+        #content = self.parser.get_content( )
         news_feed = atoma.parse_rss_bytes(content) # kind of creating our rss feed into array form
         return news_feed.items
 
