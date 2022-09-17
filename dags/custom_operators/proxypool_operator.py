@@ -31,7 +31,7 @@ class ProxyPoolOperator(BaseOperator):
         self.redis_key = redis_key
 
     @retry(5)
-    def execute(self, context):
+    def execute(self, context): # this method will scrap our proxy ip address and store it in redis
         proxy_scraper = ProxyPoolScraper(self.proxy_webpage)
         proxy_validator = ProxyPoolValidator(self.testing_url)
         proxy_stream = proxy_scraper.get_proxy_stream(self.number_of_proxies)

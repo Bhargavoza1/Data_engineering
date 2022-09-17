@@ -1,3 +1,4 @@
+
 from modules import proxypool_validator
 from modules import  proxypool_scraper
 from modules import rss_news_producer
@@ -65,3 +66,9 @@ with NewsExporter(['localhost:9092']) as exporter:
                 'rss_news',
                 news.as_dict()
             )
+
+from urllib.parse import urlparse
+
+a =    parsed_url = urlparse("https://www.mirror.co.uk/sport/?service=rss")
+b    = parsed_url.netloc.replace("www.", "")
+

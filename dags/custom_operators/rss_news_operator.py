@@ -35,7 +35,7 @@ class RSSNewsOperator(BaseOperator):
         self.topic = topic
 
     @retry(5)
-    def execute(self, context):
+    def execute(self, context): # this method will scrap every rss news links given inside dags_config
         validator = NewsValidator(self.validator_config)
         producer = NewsProducer(self.rss_feed, self.language)
         redis = RedisProxyPoolClient(self.redis_key, self.redis_config)

@@ -12,7 +12,7 @@ from custom_operators import (
 
 def extract_feed_name(url):
     parsed_url = urlparse(url)
-    return parsed_url.netloc.replace("www.", "")
+    return parsed_url.netloc.replace("www.", "") # netloc Contains the network location - which includes the domain itself and remove www. char
 
 
 def dummy_callable(action):
@@ -44,6 +44,7 @@ def create_dag(dag_id, interval, config, language, rss_feeds):
         is_paused_upon_creation=False
     ) as dag:
 
+        #dummy task to know if dag started
         start = PythonOperator(
             task_id="starting_pipeline",
             python_callable=dummy_callable,
@@ -51,6 +52,7 @@ def create_dag(dag_id, interval, config, language, rss_feeds):
             dag=dag
         )
 
+        #scraping proxy and pushing it to redis
         proxypool = ProxyPoolOperator(
             task_id="updating_proxypoool",
             proxy_webpage=config.PROXY_WEBPAGE,
@@ -61,12 +63,13 @@ def create_dag(dag_id, interval, config, language, rss_feeds):
             redis_key=config.REDIS_KEY,
             dag=dag
         )
-
+        # n = rss_feeds
+        #create n number of tasks
         events = [
             export_events(config, rss_feed, language, dag)
             for rss_feed in rss_feeds
         ]
-
+        # dummy task to know if dag is finished
         finish = PythonOperator(
             task_id="finishing_pipeline",
             python_callable=dummy_callable,
@@ -80,14 +83,15 @@ def create_dag(dag_id, interval, config, language, rss_feeds):
 
 
 for n, item in enumerate(config.RSS_FEEDS.items()):
-    language, rss_feeds = item
-    dag_id = f"rss_news_{language}"
-    interval = f"{n*4}-59/10 * * * *"
+    language, rss_feeds = item # rss_feeds as array
+    dag_id = f"rss_news_{language}" # assigning dag id with RSS_FEEDS dictionary key
+    interval = f"{n*4}-59/10 * * * *" # Cron job interval #refer  https://crontab.guru/
 
+    # creat n number of dag
     globals()[dag_id] = create_dag(
         dag_id,
         interval,
-        config,
+        config, # dags_config.py file
         language,
         rss_feeds
     )
