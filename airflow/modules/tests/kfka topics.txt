@@ -11,6 +11,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic rss_news --from
 kafka-console-producer --bootstrap-server localhost:9092 --topic rss_news
 
 
+
 kafka-console-consumer --bootstrap-server localhost:9092 --topic connect-status --from-beginning
 
 docker-compose -f kafkacompose.yml up
@@ -19,6 +20,14 @@ docker-compose -f kafkacompose.yml up
 
 kafka-console-producer --broker-list localhost:9092 --topic rss_news --property value.schema='{"type":"record","name":"myrecord","fields":[{"name":"f1","type":"string"}]}'
 
+"elastic search"
+curl -XGET 'http://localhost:9200/rss_news/_search?pretty'
+curl http://localhost:9200/_aliases?pretty=true
 
- curl -XGET 'http://localhost:9200/rss_news/_search?pretty'
- curl http://localhost:9200/_aliases?pretty=true
+
+"mongo"
+docker-compose -f kafkacompose2.yml  exec mongo  mongosh --eval "rsconf = { _id : 'rs0', members: [ { _id : 0, host : 'mongo:27017', priority: 1.0 }]}; rs.initiate(rsconf);"
+
+
+
+curl -X POST -H "Content-Type: application/json" -d @mongodb-sink.json http://localhost:8083/connectors -w "\n"

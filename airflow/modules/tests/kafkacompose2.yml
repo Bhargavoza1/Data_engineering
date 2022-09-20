@@ -1,0 +1,139 @@
+version: '3.6'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1 #latest
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    #build: ../../../kafka
+    image: confluentinc/cp-kafka:7.1.1 #latest
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENERS: LISTENER_1://broker:29092,LISTENER_2://broker:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_1://broker:29092,LISTENER_2://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_1:PLAINTEXT,LISTENER_2:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    volumes:
+      - ../../../kafka:/home/appuser
+    command:
+      - ./create_default_topic.sh
+
+
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.1.1 # latest #7.1.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+
+  connect:
+    container_name: connect
+    build: ../../../connect
+    hostname: connect
+    ports:
+      - 8083:8083
+    #volumes:
+      #- ../../../connect/connectors:/etc/kafka-connect/connectors
+    depends_on:
+      - zookeeper
+      - broker
+      #- minio
+      #- elasticsearch
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: connect-cluster-group
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONNECT_CONNECTIONS_MAX_IDLE_MS: 180000
+      CONNECT_METADATA_MAX_AGE_MS: 180000
+      CONNECT_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:7.1.1 # latest #7.1.0
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    ports:
+      - 8082:8082
+    hostname: rest-proxy
+    container_name: rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'broker:29092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+    #command:
+     # - ./register_connectors.sh
+
+
+  #elasticsearch:
+  #  container_name: elasticsearch
+  #  build: ../../../elastic
+  #  restart: unless-stopped
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  ports:
+  #    - 9200:9200
+
+ #minio:
+ #  container_name: minio
+ #  build: ../../../minio
+ #  ports:
+ #    - 9000:9000
+ #  environment:
+ #    - MINIO_ACCESS_KEY=minio
+ #    - MINIO_SECRET_KEY=minio-secret-key
+ #    - DEFAULT_BUCKET=rssnews
+
+
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    command: --replSet rs0 --oplogSize 128
+    #chmod 400 /data/db/key/key1
+    ports:
+      - 27017:27017
+    volumes:
+      - rs1:/data/db
+
+
+volumes:
+  rs1:

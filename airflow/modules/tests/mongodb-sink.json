@@ -1,14 +1,24 @@
 {
   "name": "mongo-sink",
   "config": {
+
+
     "topics": "rss_news",
+
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable":false,
     "value.converter.schemas.enable": false,
     "database": "rss_news",
     "collection": "rss_news",
+
+
+
     "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+
     "connection.uri": "mongodb://mongo"
+
+
+
   }
 }
