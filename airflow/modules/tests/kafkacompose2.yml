@@ -134,6 +134,18 @@ services:
     volumes:
       - rs1:/data/db
 
+  elasticsearch:
+    container_name: elasticsearch
+    build: ../../../elastic
+    restart: unless-stopped
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+
 
 volumes:
   rs1:
